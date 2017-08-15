@@ -1,6 +1,7 @@
 from __future__ import print_function
 import contextlib
 import time
+import pyfunc
 from ctypes import cdll
 
 
@@ -13,7 +14,6 @@ def time_print(task_name=""):
         yield
     finally:
         print(task_name, ":", time.time() - t, "s")
-
 
 
 golib = cdll.LoadLibrary('./gofunc.so')
@@ -41,9 +41,21 @@ t1 = time.time()
 ctime = t1 - t0
 
 
-assert(cresult == goresult)
+t0 = time.time()
+for i in xrange(N_calls):
+    pyresult = pyfunc.add(2, 3)
+t1 = time.time()
 
-print('C time  = %f total \t%f per call' % (ctime, ctime / N_calls))
-print('Go time = %f total\t%f per call' % (gotime, gotime / N_calls))
-print("C = %.1f times faster" % (gotime / ctime))
+pytime = t1 - t0
+
+
+assert(cresult == goresult)
+assert(cresult == pyresult)
+
+print('C      time = %f seconds total\t%f per call' % (ctime, ctime / N_calls))
+print('Go     time = %f seconds total\t%f per call' % (gotime, gotime / N_calls))
+print('Python time = %f seconds total\t%f per call' % (pytime, pytime / N_calls))
+
+print("C = %.1f times faster than Go" % (gotime / ctime))
+print("C = %.1f times faster than Python" % (pytime / ctime))
 
