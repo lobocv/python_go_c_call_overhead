@@ -5,17 +5,6 @@ import pyfunc
 from ctypes import cdll
 
 
-
-
-@contextlib.contextmanager
-def time_print(task_name=""):
-    t = time.time()
-    try:
-        yield
-    finally:
-        print(task_name, ":", time.time() - t, "s")
-
-
 golib = cdll.LoadLibrary('./gofunc.so')
 print("Loaded go generated SO library")
 
